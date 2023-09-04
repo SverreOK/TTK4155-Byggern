@@ -1,5 +1,5 @@
 # List all source files to be compiled; separate with space
-SOURCE_FILES := main.c
+SOURCE_FILES := main.c src/uart.c
 
 # Set this flag to "yes" (no quotes) to use JTAG; otherwise ISP (SPI) is used
 PROGRAM_WITH_JTAG := yes
@@ -21,15 +21,19 @@ OBJECT_FILES = $(SOURCE_FILES:%.c=$(BUILD_DIR)/%.o)
 
 .DEFAULT_GOAL := $(BUILD_DIR)/main.hex
 
+# Create the build directory and subdirectories
 $(BUILD_DIR):
-	mkdir $(BUILD_DIR)
+	mkdir -p $(BUILD_DIR)/src
 
+# Compile source files into object files
 $(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
+# Link object files into the final hex file
 $(BUILD_DIR)/main.hex: $(OBJECT_FILES) | $(BUILD_DIR)
-	$(CC) $(CFLAGS) $(OBJECT_FILES) -o $(BUILD_DIR)/a.out
-	avr-objcopy -j .text -j .data -O ihex $(BUILD_DIR)/a.out $(BUILD_DIR)/main.hex
+	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
+	avr-objcopy -j .text -j .data -O ihex $@ $(BUILD_DIR)/main.hex
+
 
 .PHONY: flash
 flash: $(BUILD_DIR)/main.hex
