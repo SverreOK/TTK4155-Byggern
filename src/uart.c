@@ -22,4 +22,3 @@ void uart_transmit(unsigned char data) {
 
     UDR0 = data;
 }
-
