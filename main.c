@@ -17,8 +17,7 @@ int main(void) {
 void testUART() {
     uart_init(MYUBRR);
     while(1) {
-        unsigned char received_char = uart_receive();
-        uart_transmit(received_char);
+        printf("Hello world\n");
         blinkLED();
     }
 }

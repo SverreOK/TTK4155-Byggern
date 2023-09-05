@@ -7,20 +7,20 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void uart_transmit(unsigned char data) {
+void uart_transmit(unsigned char data, FILE* f) {
 
     while (! (UCSR0A & (1<<UDRE0)));
 
     UDR0 = data;
 }
 
-unsigned char uart_receive() {
+unsigned char uart_receive(FILE* f) {
     while (!(UCSR0A & (1 << RXC0)));
 
     return UDR0;
 }
 
-void uart_init(unsigned int ubrr) {
+FILE* uart_init(unsigned int ubrr) {
 
     // Set BAUD rate
     UBRR0H = (unsigned char) (ubrr>>8);
@@ -30,10 +30,5 @@ void uart_init(unsigned int ubrr) {
 
     UCSR0C = (1<<URSEL0) | (1<<USBS0) | (3<<UCSZ00);
 
-    //fdevopen(&uart_transmit, &uart_receive);
-}
-
-void uart_flush() {
-    unsigned char dummy;
-    while ( UCSR0A & (1<<RXC0) ) dummy = UDR0; 
+    return fdevopen(&uart_transmit, &uart_receive);
 }

@@ -12,10 +12,10 @@
 #define MYUBRR FOSC/16/BAUD-1 // uart baud rate register
 
 // FUNCTIONS
-void uart_init(unsigned int ubrr);
+FILE* uart_init(unsigned int ubrr);
 
-void uart_transmit(unsigned char data);
+void uart_transmit(unsigned char data, FILE* f);
 
-unsigned char uart_receive();
+unsigned char uart_receive(FILE* f);
 
 void uart_flush();
