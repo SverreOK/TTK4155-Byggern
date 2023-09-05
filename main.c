@@ -1,6 +1,6 @@
 //test
 #define F_CPU 4915200
-#define BLINK_HZ 20
+#define BLINK_HZ 10
 
 #include <avr/io.h>
 #include <util/delay.h>
@@ -17,7 +17,8 @@ int main(void) {
 void testUART() {
     uart_init(MYUBRR);
     while(1) {
-        uart_transmit('a');
+        unsigned char received_char = uart_receive();
+        uart_transmit(received_char);
         blinkLED();
     }
 }
