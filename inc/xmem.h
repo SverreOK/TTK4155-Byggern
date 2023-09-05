@@ -1,0 +1,2 @@
+
+void xmem_init();
