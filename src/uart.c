@@ -15,7 +15,7 @@ void uart_transmit(unsigned char data) {
 }
 
 unsigned char uart_receive() {
-    while (!(UCSR0A & (1 << RXC0)))
+    while (!(UCSR0A & (1 << RXC0)));
 
     return UDR0;
 }
@@ -30,7 +30,7 @@ void uart_init(unsigned int ubrr) {
 
     UCSR0C = (1<<URSEL0) | (1<<USBS0) | (3<<UCSZ00);
 
-    fdevopen(&uart_transmit, &uart_receive);
+    //fdevopen(&uart_transmit, &uart_receive);
 }
 
 void uart_flush() {

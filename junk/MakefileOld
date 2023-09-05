@@ -15,21 +15,25 @@ TARGET_CPU := atmega162
 TARGET_DEVICE := m162
 
 CC := avr-gcc
-CFLAGS := -O -std=c11 -mmcu=$(TARGET_CPU) -ggdb -Wall -Wpedantic -Wextra #-Werror
+CFLAGS := -O -std=c11 -mmcu=$(TARGET_CPU) -ggdb
 
 OBJECT_FILES = $(SOURCE_FILES:%.c=$(BUILD_DIR)/%.o)
 
 .DEFAULT_GOAL := $(BUILD_DIR)/main.hex
 
+# Create the build directory and subdirectories
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)/src
 
+# Compile source files into object files
 $(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
+# Link object files into the final hex file
 $(BUILD_DIR)/main.hex: $(OBJECT_FILES) | $(BUILD_DIR)
-	$(CC) $(CFLAGS) $(OBJECT_FILES) -o $(BUILD_DIR)/a.out
-	avr-objcopy -j .text -j .data -O ihex $(BUILD_DIR)/a.out $(BUILD_DIR)/main.hex
+	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
+	avr-objcopy -j .text -j .data -O ihex $@ $(BUILD_DIR)/main.hex
+
 
 .PHONY: flash
 flash: $(BUILD_DIR)/main.hex
