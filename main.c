@@ -1,5 +1,6 @@
 //test
 #define F_CPU 4915200
+#define BLINK_HZ 20
 
 #include <avr/io.h>
 #include <util/delay.h>
@@ -25,9 +26,9 @@ void blinkLED() {
     DDRA |= (1 << PA0);
 
     PORTA |= (1 << PA0);
-    _delay_ms(10);
+    _delay_ms(1000/BLINK_HZ/2);
     PORTA &= ~(1 << PA0);
-    _delay_ms(10);
+    _delay_ms(1000/BLINK_HZ/2);
     // while (1) {
     // }
 }

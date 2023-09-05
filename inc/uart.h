@@ -4,7 +4,7 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdlib.h>
-
+#include <stdio.h>
 
 // DEFINES
 #define BAUD 9600 // baud rate
@@ -16,4 +16,6 @@ void uart_init(unsigned int ubrr);
 
 void uart_transmit(unsigned char data);
 
-//void uart_receive();
+unsigned char uart_receive();
+
+void uart_flush();
