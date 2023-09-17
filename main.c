@@ -6,17 +6,43 @@
 #include <util/delay.h>
 #include "inc/uart.h"
 #include "inc/xmem.h"
+#include "inc/adc.h"
+#include "inc/io.h"
 
 void blinkLED();
 void testUART();
 void SRAM_test(void);
+void print_adc();
+void print_buttons();
 
 int main(void) {
+    adc_init();
     xmem_init();
     uart_init(MYUBRR);
-    printf("Starting test\n");
-    SRAM_test();
+    io_input_init();
+
+    printf("Hallo!\n");
+
+    while (1) {
+        print_buttons();
+        _delay_ms(100);
+    }
+
+    // SRAM_test();
     return 0;
+}
+
+void print_buttons()
+{
+    printf("Button: %i, %i, %i\n", io_read(1), io_read(2), io_read(3));
+}
+
+void print_adc()
+{
+    uint8_t values[4];
+    adc_read_all(values);
+
+    printf("value: %i,  %i,  %i,  %i\n", values[0], values[1], values[2], values[3]);   //, adc_read(0), adc_read(1), adc_read(2), adc_read(3));
 }
 
 void testUART1() {
@@ -38,8 +64,8 @@ void testUART2() {
 
 void testXMEM() {
     xmem_init();
-    int volatile * const p_reg = (int *) 0b0001001100110011;
-    *p_reg = 0x1234;
+    int volatile * const p_reg = (int *) 0x0F0F; //0b0001001100110011;
+    *p_reg = 0x5555;
     while (1) {}
 }
 
