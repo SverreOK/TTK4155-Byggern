@@ -7,4 +7,5 @@ void xmem_init() {
     SFIOR |= (1<<XMM2);
     SFIOR &= ~(1<<XMM1);
     SFIOR &= ~(1<<XMM0);
+    //SFIOR |= (1<<XMBK);
 }
