@@ -21,7 +21,7 @@ int main(void) {
     xmem_init();
     uart_init(MYUBRR);
     io_input_init();
-    oled_init();
+    FILE* oled_file = oled_init();
 
     printf("Hallo!\n");
 
@@ -29,11 +29,19 @@ int main(void) {
 
     SRAM_test();
 
+    oled_goto(1, 1);
+    oled_print("A");
+    oled_print("B");
+    oled_print("C");
+    oled_print("D");
+    vfprintf(oled_file, "askls %i", 5);
+
 
     while (1) {
-        // print_buttons();
-        // print_adc();
-        // _delay_ms(100);
+        print_buttons();
+        print_adc();
+        //vfprintf(oled_file, "aslkdjakls %i", 5);
+        _delay_ms(100);
     }
 
     // SRAM_test();

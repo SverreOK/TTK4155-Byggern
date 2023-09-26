@@ -15,7 +15,8 @@ TARGET_CPU := atmega162
 TARGET_DEVICE := m162
 
 CC := avr-gcc
-CFLAGS := -O -std=c11 -mmcu=$(TARGET_CPU) -ggdb -Wall -Wpedantic -Wextra #-Werror
+INCLUDE_DIR := inc
+CFLAGS := -O -std=c11 -mmcu=$(TARGET_CPU) -ggdb #-Wpedantic -Wall -Wextra #-Werror
 
 OBJECT_FILES = $(SOURCE_FILES:%.c=$(BUILD_DIR)/%.o)
 
@@ -25,7 +26,7 @@ $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)/src
 
 $(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@ -I $(INCLUDE_DIR)
 
 $(BUILD_DIR)/main.hex: $(OBJECT_FILES) | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $(OBJECT_FILES) -o $(BUILD_DIR)/a.out

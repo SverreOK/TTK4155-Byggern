@@ -6,6 +6,11 @@
 #define DISPLAY_COLUMNS 128
 #define DISPLAY_PAGES 8
 
+uint8_t oled_line = 0;
+uint8_t oled_col = 0;
+uint8_t font_size = 5;
+uint8_t inverted = 1;
+
 void write_c(uint8_t command)
 {
     uint8_t volatile * const command_reg = (uint8_t *) OLED_COMMAND_ADDRESS;
@@ -18,7 +23,7 @@ void write_d(uint8_t data)
     *data_reg = data;
 }
 
-void oled_init() // Source: 力元電子（香港）有限公司
+FILE* oled_init() // Source: 力元電子（香港）有限公司
 {
     write_c(0xae); // display off
     write_c(0xa1); //segment remap
@@ -39,9 +44,9 @@ void oled_init() // Source: 力元電子（香港）有限公司
     write_c(0x30);
     write_c(0xad); //master configuration
     write_c(0x00);
-    write_c(0xa4); //out follows RAM content
-    write_c(0xa6); //set normal display
     write_c(0xaf); // display on
+
+    return fdevopen(oled_print_f, NULL);
 }
 
 void oled_test()
@@ -53,7 +58,7 @@ void oled_test()
 
     oled_goto(3, 3*8);
 
-    char char1 = '#';
+    char char1 = 'K';
     oled_print(&char1);
     
     // for (int i = 0; i < 8; i++)
@@ -89,11 +94,13 @@ void oled_home() {
 }
 
 void oled_goto_line(uint8_t line) {
+    oled_line = line;
     write_c(0xB0 + line);
 }
 
 void oled_goto_column(uint8_t column)
 {
+    oled_col = column;
     write_c(0x00 + (column & 0x0F));
     write_c(0x10 + ((column & 0xF0) >> 4));
 }
@@ -115,8 +122,17 @@ void oled_clear_line(uint8_t line)
 
 void oled_print(char * c)
 {
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < font_size; i++)
     {
-        write_d(pgm_read_byte(&(font8[*c - 32][i])));
+        if (font_size == 4)         write_d(pgm_read_byte(&(font4[*c - 32][i])));
+        else if (font_size == 5)    write_d(pgm_read_byte(&(font5[*c - 32][i])));
+        else                        write_d(pgm_read_byte(&(font8[*c - 32][i])));
     }
+    oled_goto_column(oled_col += font_size + (font_size==5));
+}
+
+int oled_print_f(char * c, FILE* f)
+{
+    oled_print(c);
+    return 0;
 }

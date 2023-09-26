@@ -1,4 +1,5 @@
-#include "../inc/xmem.h"
+//#include "../inc/xmem.h"
+#include "xmem.h"
 #include <avr/io.h>
 
 void xmem_init() {
