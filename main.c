@@ -28,9 +28,7 @@ int main(void) {
 
     printf("Hallo!\n");
 
-    font_size = 8;
-    oled_test();
-
+    oled_print_line(3, "Running SRAM test...");
     SRAM_test();
 
     oled_reset();

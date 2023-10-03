@@ -3,9 +3,9 @@
 #include "adc.h"
 #include "io.h"
 #include <stdio.h>
-#include <stdlib.h>
 
-const uint8_t joystick_threshold = 100;
+const uint8_t joystick_activate_threshold = 100;
+const uint8_t joystick_deactivate_threshold = 80;
 
 uint8_t x_mid = 128;
 uint8_t y_mid = 128;
@@ -45,29 +45,29 @@ void joystick_poll()
     int8_t y = joystick_y() - 128;
     uint8_t button = (!io_read(1));
     
-    if (x > joystick_threshold)
+    if (x > joystick_activate_threshold)
     {
         if (!right_active)  {right_active = 1;  action = RIGHT;}
     }
-    else right_active = 0;
+    else if (x < joystick_deactivate_threshold) right_active = 0;
 
-    if (-x > joystick_threshold)
+    if (-x > joystick_activate_threshold)
     {
         if (!left_active)   {left_active = 1;   action = LEFT;}
     }
-    else left_active = 0;
+    else if (-x < joystick_deactivate_threshold) left_active = 0;
 
-    if (y > joystick_threshold)
+    if (y > joystick_activate_threshold)
     {
         if (!up_active)     {up_active = 1;     action = UP;}
     }
-    else up_active = 0;
+    else if (y < joystick_deactivate_threshold) up_active = 0;
 
-    if (-y > joystick_threshold)
+    if (-y > joystick_activate_threshold)
     {
         if (!down_active)   {down_active = 1;   action = DOWN;}
     }
-    else down_active = 0;
+    else if (-y < joystick_deactivate_threshold) down_active = 0;
 
     if (button)
     {

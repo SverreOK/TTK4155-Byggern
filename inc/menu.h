@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "oled.h"
 
+#define MAX_CHILDREN 5
+
 // Source u/duane11583 how to create a menu for low level system
 // https://www.reddit.com/r/embedded/comments/vviwq6/whats_the_best_way_to_make_a_user_menu_on_a_tiny/
 typedef struct menu_entry {
@@ -8,7 +10,7 @@ typedef struct menu_entry {
     const char *menu_title;
     void (*function)(void);
     struct menu_entry *parent;
-    struct menu_entry *child[5];
+    struct menu_entry *child[MAX_CHILDREN];
 } menu_t, *menu_ptr;
 
 // initialize function

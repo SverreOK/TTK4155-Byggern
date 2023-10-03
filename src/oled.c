@@ -47,6 +47,7 @@ FILE* oled_init() // Source: 力元電子（香港）有限公司
     write_c(0x00);
     write_c(0xaf); // display on
 
+    oled_reset();
     oled_goto(0, 0);
 
     return fdevopen(&oled_print_f, NULL); // Test code: vfprintf(oled_file, "Hello world 6 %d", 5); (doesn't work)

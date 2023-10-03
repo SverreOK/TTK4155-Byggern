@@ -18,6 +18,7 @@ const char highscore[] = "Highscore";
 menu_ptr menu_init(menu_type_t) {
     menu_ptr menu = malloc(sizeof(menu_t));
     menu->menu_title = main_menu;
+    clear_children(menu);
 
     menu_ptr menu_ping_pong = menu_add(menu, ping_pong, &show_ping_pong);
     menu_ptr menu_difficulty = menu_add(menu, difficulty, &show_difficulty);
@@ -88,6 +89,7 @@ menu_ptr menu_add(menu_ptr parent, const char * menu_title, void (*function)()) 
     child -> menu_title = menu_title;
     child -> function = function;
     child -> parent = parent;
+    clear_children(child);
 
     int i = 0;
     while (parent->child[i] != NULL) {
@@ -116,6 +118,7 @@ menu_ptr menu_select (menu_ptr current_menu, int menu_depth, int element) {
     }
 
     //clear screen
+    
     int i = 0;
     while (current_menu -> child[i] != NULL) {
         //oled stuff
@@ -125,6 +128,14 @@ menu_ptr menu_select (menu_ptr current_menu, int menu_depth, int element) {
         i++;
     }
     return current_menu;
+}
+
+void clear_children(menu_ptr menu)
+{
+    for (int i = 0; i < MAX_CHILDREN; i++)
+    {
+        menu->child[i] = NULL;
+    }
 }
 
 // menu functions
