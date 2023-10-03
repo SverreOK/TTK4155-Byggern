@@ -1,5 +1,6 @@
 #include "../inc/oled.h"
 #include "../inc/fonts.h"
+//#include <string.h>
 
 #define OLED_COMMAND_ADDRESS 0x1000
 #define OLED_DATA_ADDRESS 0x1200
@@ -9,7 +10,7 @@
 uint8_t oled_line = 0;
 uint8_t oled_col = 0;
 uint8_t font_size = 5;
-uint8_t inverted = 1;
+uint8_t inverted = 0;
 
 void write_c(uint8_t command)
 {
@@ -23,7 +24,7 @@ void write_d(uint8_t data)
     *data_reg = data;
 }
 
-void oled_init() // Source: 力元電子（香港）有限公司
+FILE* oled_init() // Source: 力元電子（香港）有限公司
 {
     write_c(0xae); // display off
     write_c(0xa1); //segment remap
@@ -45,24 +46,23 @@ void oled_init() // Source: 力元電子（香港）有限公司
     write_c(0xad); //master configuration
     write_c(0x00);
     write_c(0xaf); // display on
+
+    oled_goto(0, 0);
+
+    return fdevopen(&oled_print_f, NULL); // Test code: vfprintf(oled_file, "Hello world 6 %d", 5); (doesn't work)
 }
 
 void oled_test()
 {
-    // Entire display on
-    //write_c(0b10100101);
-
     oled_reset();
 
-    oled_goto(3, 3*8);
-
-    char char1 = 'K';
-    oled_print(&char1);
-    
-    // for (int i = 0; i < 8; i++)
-    // {
-    //     oled_draw_arrow(7-i, i*8);
-    // }
+    oled_goto(1, 0);
+    oled_print_char('A');
+    oled_print_char('B');
+    oled_print_char('C');
+    oled_print(" Hello world ");
+    inverted = 1;
+    oled_print_line(6, "En linje");
 }
 
 void oled_draw_arrow(uint8_t line, uint8_t column)
@@ -118,23 +118,49 @@ void oled_clear_line(uint8_t line)
     }
 }
 
-void oled_print(char * c)
+void oled_whitespace(uint8_t width)
+{
+    for (int i = 0; i < width; i++)
+    {
+        write_d(inverted * 0xff);
+        oled_goto_column(++oled_col);
+    }
+}
+
+void oled_print_char(char c)
 {
     for (int i = 0; i < font_size; i++)
     {
         uint8_t data;
         
-        if (font_size == 4)         data = pgm_read_byte(&(font4[*c - 32][i]));
-        else if (font_size == 5)    data = pgm_read_byte(&(font5[*c - 32][i]));
-        else                        data = pgm_read_byte(&(font8[*c - 32][i]));
+        if (font_size == 4)         data = pgm_read_byte(&(font4[c - 32][i]));
+        else if (font_size == 5)    data = pgm_read_byte(&(font5[c - 32][i]));
+        else                        data = pgm_read_byte(&(font8[c - 32][i]));
 
         write_d(data ^ (inverted * 0xff)); // XOR
     }
-    oled_goto_column(oled_col += font_size + (font_size==5));
+    oled_goto_column(oled_col += font_size);
+    if (font_size==5) oled_whitespace(1);
 }
 
 int oled_print_f(char * c, FILE* f)
 {
-    oled_print(c);
+    oled_print_char(c);
     return 0;
+}
+
+void oled_print(const char text[])
+{
+    for (int i = 0; i < strlen(text); i++)
+    {
+        oled_print_char(text[i]);
+    }
+}
+
+void oled_print_line(uint8_t line, const char text[])
+{
+    oled_goto(line, 0);
+    oled_whitespace(2);
+    oled_print(text);
+    oled_whitespace(2);
 }

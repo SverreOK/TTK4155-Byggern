@@ -10,6 +10,8 @@
 #include "inc/io.h"
 #include "inc/utils.h"
 #include "inc/oled.h"
+#include "joystick.h"
+#include "menu.h"
 
 void blinkLED();
 void testUART();
@@ -21,26 +23,24 @@ int main(void) {
     xmem_init();
     uart_init(MYUBRR);
     io_input_init();
-    oled_init();
+    FILE* oled_file = oled_init();
+    joystick_calibrate();
 
     printf("Hallo!\n");
 
+    font_size = 8;
     oled_test();
 
     SRAM_test();
 
-    oled_goto(1, 1);
-    oled_print("A");
-    oled_print("B");
-    oled_print("C");
-    oled_print("D");
+    oled_reset();
+
+    menu_activate(menu_init());
 
 
     while (1) {
-        print_buttons();
-        print_adc();
-        //vfprintf(oled_file, "aslkdjakls %i", 5);
-        _delay_ms(100);
+        joystick_test();
+        _delay_ms(300);
     }
 
     // SRAM_test();
