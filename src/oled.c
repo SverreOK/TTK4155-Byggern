@@ -23,7 +23,7 @@ void write_d(uint8_t data)
     *data_reg = data;
 }
 
-FILE* oled_init() // Source: 力元電子（香港）有限公司
+void oled_init() // Source: 力元電子（香港）有限公司
 {
     write_c(0xae); // display off
     write_c(0xa1); //segment remap
@@ -45,8 +45,6 @@ FILE* oled_init() // Source: 力元電子（香港）有限公司
     write_c(0xad); //master configuration
     write_c(0x00);
     write_c(0xaf); // display on
-
-    return fdevopen(oled_print_f, NULL);
 }
 
 void oled_test()

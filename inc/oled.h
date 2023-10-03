@@ -4,7 +4,7 @@
 uint8_t font_size;
 uint8_t inverted;
 
-FILE* oled_init();
+void oled_init();
 void oled_reset();
 void oled_home();
 void oled_goto_line(uint8_t line);

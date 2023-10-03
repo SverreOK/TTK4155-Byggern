@@ -21,7 +21,7 @@ int main(void) {
     xmem_init();
     uart_init(MYUBRR);
     io_input_init();
-    FILE* oled_file = oled_init();
+    oled_init();
 
     printf("Hallo!\n");
 
@@ -34,7 +34,6 @@ int main(void) {
     oled_print("B");
     oled_print("C");
     oled_print("D");
-    vfprintf(oled_file, "askls %i", 5);
 
 
     while (1) {
