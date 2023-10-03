@@ -124,9 +124,13 @@ void oled_print(char * c)
 {
     for (int i = 0; i < font_size; i++)
     {
-        if (font_size == 4)         write_d(pgm_read_byte(&(font4[*c - 32][i])));
-        else if (font_size == 5)    write_d(pgm_read_byte(&(font5[*c - 32][i])));
-        else                        write_d(pgm_read_byte(&(font8[*c - 32][i])));
+        uint8_t data;
+        
+        if (font_size == 4)         data = pgm_read_byte(&(font4[*c - 32][i]));
+        else if (font_size == 5)    data = pgm_read_byte(&(font5[*c - 32][i]));
+        else                        data = pgm_read_byte(&(font8[*c - 32][i]));
+
+        write_d(data ^ (inverted * 0xff)); // XOR
     }
     oled_goto_column(oled_col += font_size + (font_size==5));
 }
