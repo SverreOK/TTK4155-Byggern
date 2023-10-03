@@ -35,30 +35,29 @@ void menu_activate(menu_ptr menu) {
     int depth_direction = 0;
     int element = 0;
     menu_ptr current_menu = menu;
+    draw_menu(current_menu, element);
 
-    while (1) {
-        menu_ptr old_menu = current_menu;
-
-        current_menu = menu_select(current_menu, depth_direction, element);
-        depth_direction = 0;
-
+    while (1)
+    {
         joystick_poll();
-
         joystick_action direction = joystick_get_action();
+
+        depth_direction = 0;
+        uint8_t redraw = 0;
 
         switch (direction) {
             case UP:
                 if (element > 0) {
                     element--;
                 }
-                oled_reset();
+                redraw = 1;
                 break;
 
             case DOWN:
                 if (current_menu->child[element+1] != NULL) {
                     element++;
                 }
-                oled_reset();
+                redraw = 1;
                 break;
 
             case LEFT:
@@ -68,19 +67,25 @@ void menu_activate(menu_ptr menu) {
                 else {
                     depth_direction = -1;
                 }
-                oled_reset();
+                redraw = 1;
                 break;
 
             case RIGHT:
             case PRESS:
                 depth_direction = 1;
-                oled_reset();
+                redraw = 1;
                 break;
             
             case NEUTRAL:
                 break;
         }
-        //printf("Exited while \n");
+
+        current_menu = menu_select(current_menu, depth_direction, element);
+
+        if (redraw)
+        {
+            draw_menu(current_menu, element);
+        }
     }
 }
 
@@ -100,34 +105,35 @@ menu_ptr menu_add(menu_ptr parent, const char * menu_title, void (*function)()) 
     return child;
 }
 
-menu_ptr menu_select (menu_ptr current_menu, int menu_depth, int element) {
-    if (menu_depth < 0) {
-        if (current_menu->parent != NULL) {
-            current_menu = current_menu->parent;
-        }
+menu_ptr menu_select (menu_ptr current_menu, int menu_depth, int element){
+    if ((menu_depth < 0) && (current_menu->parent != NULL)){
+        current_menu = current_menu->parent;
     }
-    if (menu_depth > 0) {
-        if (current_menu->child[0] != NULL) {
-            current_menu = current_menu->child[element];
-        }
+    if ((menu_depth > 0) && (current_menu->child[0] != NULL)){
+        current_menu = current_menu->child[element];
     }
 
-    if (current_menu->function != NULL) {
+    if (current_menu->function != NULL){
         current_menu->function();
-        //return current_menu;
     }
-
-    //clear screen
     
+    return current_menu;
+}
+
+void draw_menu(menu_ptr menu, uint8_t cursor)
+{
+    font_size = 5;
+    inverted = 0;
+    
+    oled_reset();
     int i = 0;
-    while (current_menu -> child[i] != NULL) {
+    while (menu -> child[i] != NULL) {
         //oled stuff
-        if (i == element) inverted = 1;
-        oled_print_line(i, current_menu->child[i]->menu_title);
+        if (i == cursor) inverted = 1;
+        oled_print_line(i, menu->child[i]->menu_title);
         inverted = 0;
         i++;
     }
-    return current_menu;
 }
 
 void clear_children(menu_ptr menu)
@@ -142,6 +148,7 @@ void clear_children(menu_ptr menu)
 void show_ping_pong() {
     printf("Selected Ping Pong!\n");
     oled_reset();
+    font_size = 8;
     inverted = 0;
     oled_goto(2, 3*8);
     oled_print("PING!");
@@ -156,6 +163,7 @@ void show_difficulty() {
 void show_highscore() {
     printf("Selected High Scor!\n");
     oled_reset();
+    font_size = 8;
     inverted = 0;
     oled_goto(2, 3*8);
     oled_print("High!");
@@ -166,6 +174,7 @@ void show_highscore() {
 void show_easy() {
     printf("Selected Easy Mode!\n");
     oled_reset();
+    font_size = 8;
     inverted = 0;
     oled_goto(2, 3*8);
     oled_print("EASY!");
@@ -176,6 +185,7 @@ void show_easy() {
 void show_intermediate() {
     printf("Selected Intermediate Mode!\n");
     oled_reset();
+    font_size = 8;
     inverted = 0;
     oled_goto(2, 3*8);
     oled_print("Intermediate!");
@@ -186,6 +196,7 @@ void show_intermediate() {
 void show_advanced() {
     printf("Selected Advanced Mode!\n");
     oled_reset();
+    font_size = 8;
     inverted = 0;
     oled_goto(2, 3*8);
     oled_print("Advanced!");
