@@ -12,6 +12,8 @@
 #include "inc/oled.h"
 #include "joystick.h"
 #include "menu.h"
+#include "spi.h"
+#include "mcp.h"
 
 void blinkLED();
 void testUART();
@@ -23,7 +25,8 @@ int main(void) {
     xmem_init();
     uart_init(MYUBRR);
     io_input_init();
-    FILE* oled_file = oled_init();
+    spi_init();
+    oled_init();
     joystick_calibrate();
 
     printf("Hallo!\n");
@@ -31,14 +34,16 @@ int main(void) {
     oled_print_line(3, "Running SRAM test...");
     SRAM_test();
 
+
     oled_reset();
 
-    menu_activate(menu_init());
+    //menu_activate(menu_init());
 
 
     while (1) {
-        joystick_test();
-        _delay_ms(300);
+        //joystick_test();
+        mcp_init();
+        _delay_us(100);
     }
 
     // SRAM_test();
