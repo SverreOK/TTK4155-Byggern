@@ -12,8 +12,9 @@
 #include "inc/oled.h"
 #include "joystick.h"
 #include "menu.h"
-#include "spi.h"
-#include "mcp.h"
+#include "can.h"
+
+#include <avr/interrupt.h>
 
 void blinkLED();
 void testUART();
@@ -25,7 +26,7 @@ int main(void) {
     xmem_init();
     uart_init(MYUBRR);
     io_input_init();
-    spi_init();
+    can_init();
     oled_init();
     joystick_calibrate();
 
@@ -41,9 +42,28 @@ int main(void) {
 
 
     while (1) {
-        //joystick_test();
-        mcp_init();
-        _delay_us(100);
+
+        CAN_MESSAGE ratfrog = {
+            1, 3, "rat"
+        };
+
+        can_transmit(&ratfrog);
+        _delay_ms(1);
+
+        CAN_MESSAGE ratfrog2 = {
+            2, 4, "tnt"
+        };
+
+        can_transmit(&ratfrog2);
+        _delay_ms(1);
+
+        CAN_MESSAGE ratfrog3 = {
+            3, 5, "tog"
+        };
+
+        can_transmit(&ratfrog3);
+        _delay_ms(1);
+        
     }
 
     // SRAM_test();
@@ -64,7 +84,7 @@ void print_adc()
 }
 
 void testUART1() {
-    uart_init(MYUBRR);
+    sei();
     while(1) {
         printf("Hello world\n");
         blinkLED();
@@ -96,4 +116,23 @@ void blinkLED() {
     _delay_ms(1000/BLINK_HZ/2);
     // while (1) {
     // }
+}
+
+ISR(INT0_vect) 
+{
+    printf("Interrupt\n");
+
+    CAN_MESSAGE* recieved_message = malloc(sizeof(CAN_MESSAGE));
+    if (can_receive(recieved_message))
+    {
+        printf("Recieved: %c%c%c%c id: %d len: %d\n", recieved_message->data[0], recieved_message->data[1], recieved_message->data[2], recieved_message->data[3], recieved_message->id, recieved_message->length);
+    }
+    else
+    {
+        printf("Failed to receive");
+    }
+
+    mcp_bit_modify(MCP_CANINTF, MCP_RX0IF | MCP_RX1IF, 0);
+    free(recieved_message);
+    
 }
