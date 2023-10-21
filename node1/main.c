@@ -48,21 +48,21 @@ int main(void) {
         };
 
         can_transmit(&ratfrog);
-        _delay_ms(1);
+        _delay_ms(100);
 
         CAN_MESSAGE ratfrog2 = {
             2, 4, "tnt"
         };
 
         can_transmit(&ratfrog2);
-        _delay_ms(1);
+        _delay_ms(100);
 
         CAN_MESSAGE ratfrog3 = {
             3, 5, "tog"
         };
 
         can_transmit(&ratfrog3);
-        _delay_ms(1);
+        _delay_ms(100);
         
     }
 
@@ -125,7 +125,8 @@ ISR(INT0_vect)
     CAN_MESSAGE* recieved_message = malloc(sizeof(CAN_MESSAGE));
     if (can_receive(recieved_message))
     {
-        printf("Recieved: %c%c%c%c id: %d len: %d\n", recieved_message->data[0], recieved_message->data[1], recieved_message->data[2], recieved_message->data[3], recieved_message->id, recieved_message->length);
+        //printf("Recieved: %c%c%c%c id: %d len: %d\n", recieved_message->data[0], recieved_message->data[1], recieved_message->data[2], recieved_message->data[3], recieved_message->id, recieved_message->length);
+        printf("string: %s\n", recieved_message->data);
     }
     else
     {

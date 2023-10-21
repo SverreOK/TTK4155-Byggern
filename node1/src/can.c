@@ -19,7 +19,18 @@ void can_interrupt_init()
 void can_init()
 {
     mcp_init();
-    mcp_setmode(MODE_LOOPBACK);
+
+    const uint8_t PROPAG = 2;
+    const uint8_t PS1 = 7;
+    const uint8_t PS2 = 6; // Total of 16 TQ in one bit (1+2+6+7)
+
+    const uint8_t BRP = 2; // Yields baudrate of F_CPU/(2*NUM_QT*BRP) = 4.9152e6/(2*16*2) = 153600
+
+    mcp_write(MCP_CNF1, SJW4 | (BRP-1));
+    mcp_write(MCP_CNF2, BTLMODE | SAMPLE_1X | ((PS1 - 1) << 3) | (PROPAG - 1));
+    mcp_write(MCP_CNF3, WAKFIL_DISABLE | (PS2 - 1));
+
+    mcp_setmode(MODE_NORMAL);
     can_interrupt_init();
 
 }
