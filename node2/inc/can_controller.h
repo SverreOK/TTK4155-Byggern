@@ -14,12 +14,6 @@
 
 #include <stdint.h>
 
-// #define BRP_POS 16
-// #define SJW_POS 12
-// #define PROPAG_POS 8
-// #define PS1_POS 4
-// #define PS2_POS 0
-
 typedef struct can_message_t
 {
 	uint16_t id;

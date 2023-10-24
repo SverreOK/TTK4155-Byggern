@@ -12,7 +12,6 @@ uint8_t y_mid = 128;
 
 joystick_action action = NEUTRAL;
 
-// uint8_t action_status = 0b00000000; // Each bit indicates wether an action is active or not
 uint8_t up_active = 0;
 uint8_t down_active = 0;
 uint8_t left_active = 0;
@@ -39,7 +38,7 @@ uint8_t joystick_y()
     else                return 255 - (255-value)*128/(255-y_mid);
 }
 
-void joystick_poll()
+void joystick_poll_action()
 {
     int8_t x = joystick_x() - 128;
     int8_t y = joystick_y() - 128;
@@ -85,7 +84,7 @@ joystick_action joystick_get_action()
 
 void joystick_test()
 {
-    joystick_poll();
+    joystick_poll_action();
 
     printf("Action: %d\n", joystick_get_action());
 }

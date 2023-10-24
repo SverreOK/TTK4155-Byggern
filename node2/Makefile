@@ -18,7 +18,7 @@ ELF=$(BUILD_DIR)/main.elf
 
 LDFLAGS:= -T$(LDSCRIPT) -mthumb -mcpu=cortex-m3 -Wl,--gc-sections
 CFLAGS:= -mcpu=cortex-m3 -mthumb -g -std=c11 -MMD
-CFLAGS+= -I sam -I sam/sam3x/include -I sam/sam3x/source -I sam/cmsis -I . -I uart_and_printf -I inc
+CFLAGS+= -I sam -I sam/sam3x/include -I sam/sam3x/source -I sam/cmsis -I . -I uart_and_printf -I inc -I ../shared
 CFLAGS+= -D $(MCUTYPE)
 
 .DEFAULT_GOAL := $(ELF)

@@ -39,7 +39,7 @@ void menu_activate(menu_ptr menu) {
 
     while (1)
     {
-        joystick_poll();
+        joystick_poll_action();
         joystick_action direction = joystick_get_action();
 
         depth_direction = 0;

@@ -13,6 +13,7 @@
 #include "joystick.h"
 #include "menu.h"
 #include "can.h"
+#include "can_types.h"
 
 #include <avr/interrupt.h>
 
@@ -20,6 +21,7 @@ void blinkLED();
 void testUART();
 void print_adc();
 void print_buttons();
+JOYSTICK_MSG joystick_get();
 
 int main(void) {
     adc_init();
@@ -43,17 +45,35 @@ int main(void) {
 
     while (1) {
 
-        CAN_MESSAGE rottemsg = {
-            2, 6, "rotte"
-        };
-
-        can_transmit(&rottemsg);
-         _delay_ms(500);
+        // CAN_MESSAGE rottemsg = {
+        //     CAN_PRINTSRT_ID, 6, "rotte"
+        // };
+        // can_transmit(&rottemsg);
+        // _delay_ms(200);
         
+        // JOYSTICK_MSG joystick = joystick_get();
+        // printf("Values: %d %d %d\n", joystick.x, joystick.y, joystick.btn);
+        // CAN_MESSAGE joymsg = {
+        //     CAN_JOYSTICK_ID, 3, {joystick.x, joystick.y, joystick.btn}
+        // };
+        // can_transmit(&joymsg);
+        // _delay_ms(200);
+        _delay_ms(100);
+        print_adc();
     }
 
     // SRAM_test();
     return 0;
+}
+
+JOYSTICK_MSG joystick_get()
+{
+    JOYSTICK_MSG message = {
+        joystick_x(),
+        joystick_y(),
+        io_read(1),
+    };
+    return message;
 }
 
 void print_buttons()
@@ -112,7 +132,7 @@ ISR(INT0_vect)
     if (can_receive(recieved_message))
     {
         //printf("Recieved: %c%c%c%c id: %d len: %d\n", recieved_message->data[0], recieved_message->data[1], recieved_message->data[2], recieved_message->data[3], recieved_message->id, recieved_message->length);
-        printf("Received: %s\n", recieved_message->data);
+        //printf("Received: %s\n", recieved_message->data);
     }
     else
     {

@@ -16,7 +16,7 @@ TARGET_DEVICE := m162
 
 CC := avr-gcc
 INCLUDE_DIR := inc
-CFLAGS := -O -std=c11 -mmcu=$(TARGET_CPU) -ggdb #-Wpedantic -Wall -Wextra #-Werror
+CFLAGS := -O -std=c11 -mmcu=$(TARGET_CPU) -ggdb -I ../shared #-Wpedantic -Wall -Wextra #-Werror
 
 OBJECT_FILES = $(SOURCE_FILES:%.c=$(BUILD_DIR)/%.o)
 

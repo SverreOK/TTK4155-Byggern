@@ -17,6 +17,8 @@
 
 #include "can_controller.h"
 
+#include "can_types.h"
+
 #define DEBUG_INTERRUPT 0
 
 /**
@@ -58,7 +60,8 @@ void CAN0_Handler( void )
 		}
 		if(DEBUG_INTERRUPT)printf("\n\r");
 
-		printf("Received: %s\n", message.data);
+		receive_handler(&message);
+		// printf("Received: %s\n", message.data);
 	}
 	
 	if(can_sr & CAN_SR_MB0)
@@ -83,4 +86,26 @@ void CAN0_Handler( void )
 	
 	NVIC_ClearPendingIRQ(ID_CAN0);
 	//sei();*/
+}
+
+void receive_handler(CAN_MESSAGE* message)
+{
+	switch (message->id)
+	{
+	case CAN_PRINTSRT_ID:
+		printf("Received: %s\n", message->data);
+		break;
+	
+	case CAN_JOYSTICK_ID:
+		printf("Joystick values: ");
+		for (int i = 0; i < message->data_length; i++)
+		{
+			printf("%d ", message->data[i]);
+		}
+		printf("\n\r");
+		break;
+	
+	default:
+		break;
+	}
 }
