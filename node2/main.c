@@ -25,12 +25,11 @@ int main()
 
     // const uint8_t BRP = 10;
     // can_init_def_tx_rx_mb(0x165 | ((BRP - 1) << CAN_BR_BRP_Pos));
-
     const uint8_t PPG = 2;
     const uint8_t PS1 = 7;
     const uint8_t PS2 = 6; // Total of 16 TQ in one bit (1+2+6+7)
     const uint8_t SJW = 4;
-    const uint8_t BRP = 2;
+    const uint8_t BRP = 42;
 
     const uint32_t CAN_RB = ((PS2-1) << CAN_BR_PHASE1_Pos)
                           | ((PS1-1) << CAN_BR_PHASE2_Pos)
@@ -60,9 +59,23 @@ int main()
 
         // // You can add another delay if needed
         // // For example: 
-        // delay_ms(500);
 
-        CAN0_Handler();
+        // CAN_MESSAGE ratfrog = {
+        //     1, 3, "rat"
+        // };
+        // CAN_MESSAGE ratfrog3 = {
+        //     3, 5, "tog"
+        // };
+
+        CAN_MESSAGE slangemsg = {
+            4, 6, "slange"
+        };
+
+        can_send(&slangemsg, 0);
+
+        delay_ms(300);
+
+        // CAN0_Handler();
     }
     
 }

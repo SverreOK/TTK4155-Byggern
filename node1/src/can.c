@@ -20,11 +20,16 @@ void can_init()
 {
     mcp_init();
 
+    const uint64_t F_OSC = 16e6;
     const uint8_t PROPAG = 2;
     const uint8_t PS1 = 7;
     const uint8_t PS2 = 6; // Total of 16 TQ in one bit (1+2+6+7)
+    const uint8_t SYNC = 1;
+    const uint8_t NUM_TQ = PROPAG + PS1 + PS2 + SYNC;
+    const uint64_t BITRATE = 125000;
+    const uint8_t BRP = F_OSC/(2*NUM_TQ*BITRATE); // Yields BRP = 4
 
-    const uint8_t BRP = 2; // Yields baudrate of F_CPU/(2*NUM_QT*BRP) = 4.9152e6/(2*16*2) = 153600
+    // const uint8_t BRP = 4; // Yields baudrate of BITRATE = F_CPU/(2*NUM_QT*BRP) = 4.9152e6/(2*16*2) = 153600
 
     mcp_write(MCP_CNF1, SJW4 | (BRP-1));
     mcp_write(MCP_CNF2, BTLMODE | SAMPLE_1X | ((PS1 - 1) << 3) | (PROPAG - 1));

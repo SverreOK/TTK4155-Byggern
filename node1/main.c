@@ -43,26 +43,12 @@ int main(void) {
 
     while (1) {
 
-        CAN_MESSAGE ratfrog = {
-            1, 3, "rat"
+        CAN_MESSAGE rottemsg = {
+            2, 6, "rotte"
         };
 
-        can_transmit(&ratfrog);
-        _delay_ms(100);
-
-        CAN_MESSAGE ratfrog2 = {
-            2, 4, "tnt"
-        };
-
-        can_transmit(&ratfrog2);
-        _delay_ms(100);
-
-        CAN_MESSAGE ratfrog3 = {
-            3, 5, "tog"
-        };
-
-        can_transmit(&ratfrog3);
-        _delay_ms(100);
+        can_transmit(&rottemsg);
+         _delay_ms(500);
         
     }
 
@@ -120,17 +106,17 @@ void blinkLED() {
 
 ISR(INT0_vect) 
 {
-    printf("Interrupt\n");
+    // printf("Interrupt\n");
 
     CAN_MESSAGE* recieved_message = malloc(sizeof(CAN_MESSAGE));
     if (can_receive(recieved_message))
     {
         //printf("Recieved: %c%c%c%c id: %d len: %d\n", recieved_message->data[0], recieved_message->data[1], recieved_message->data[2], recieved_message->data[3], recieved_message->id, recieved_message->length);
-        printf("string: %s\n", recieved_message->data);
+        printf("Received: %s\n", recieved_message->data);
     }
     else
     {
-        printf("Failed to receive");
+        printf("Failed to receive\n");
     }
 
     mcp_bit_modify(MCP_CANINTF, MCP_RX0IF | MCP_RX1IF, 0);
