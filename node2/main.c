@@ -4,6 +4,8 @@
 #include "uart_and_printf/printf-stdarg.h"
 #include "can_controller.h"
 #include "can_interrupt.h"
+#include "can_types.h"
+#include "pwm.h"
 
 #include "sam.h"
 
@@ -20,6 +22,8 @@ void delay_ms(uint32_t milliseconds) {
 int main()
 {
     SystemInit();
+
+    pwm_init();    
 
     WDT->WDT_MR = WDT_MR_WDDIS; //Disable Watchdog Timer
 
@@ -44,7 +48,7 @@ int main()
     while (1)
     {
         CAN_MESSAGE slangemsg = {
-            4, 6, "slange"
+            CAN_PRINTSRT_ID, 6, "slange"
         };
 
         can_send(&slangemsg, 0);
