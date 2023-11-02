@@ -45,20 +45,21 @@ int main(void) {
 
     while (1) {
 
-        CAN_MESSAGE rottemsg = {
-            CAN_PRINTSRT_ID, 6, "rotte"
-        };
-        can_transmit(&rottemsg);
-        _delay_ms(200);
+        // CAN_MESSAGE rottemsg = {
+        //     CAN_PRINTSRT_ID, 6, "rotte"
+        // };
+        // can_transmit(&rottemsg);
+        // _delay_ms(200);
         
         JOYSTICK_MSG joystick = joystick_get();
-        // printf("Values: %d %d %d\n", joystick.x, joystick.y, joystick.btn);
+        printf("Values: %d %d %d\n", joystick.x, joystick.y, joystick.btn);
         CAN_MESSAGE joymsg = {
             CAN_JOYSTICK_ID, 3, {joystick.x, joystick.y, joystick.btn}
         };
         can_transmit(&joymsg);
-        _delay_ms(200);
+        _delay_ms(10);
         // print_adc();
+        // printf("Value: %d\n", adc_read(0));
     }
 
     // SRAM_test();

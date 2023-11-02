@@ -51,7 +51,7 @@ int main()
             CAN_PRINTSRT_ID, 6, "slange"
         };
 
-        can_send(&slangemsg, 0);
+        // can_send(&slangemsg, 0);
 
         delay_ms(300);
     }

@@ -18,6 +18,7 @@
 #include "can_controller.h"
 
 #include "can_types.h"
+#include "pwm.h"
 
 #define DEBUG_INTERRUPT 0
 
@@ -97,12 +98,16 @@ void receive_handler(CAN_MESSAGE* message)
 		break;
 	
 	case CAN_JOYSTICK_ID:
-		printf("Joystick values: ");
+		// printf("Joystick values: ");
 		for (int i = 0; i < message->data_length; i++)
 		{
-			printf("%d ", message->data[i]);
+			// printf("%d ", message->data[i]);
 		}
-		printf("\n\r");
+		// printf("\n\r");
+
+		pwm_set_position(message->data[0]);
+		printf("ms: %d\n", message->data[0]);
+
 		break;
 	
 	default:

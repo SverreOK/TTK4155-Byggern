@@ -22,25 +22,36 @@ void pwm_init() {
     REG_PWM_ENA = PWM_ENA_CHID5;
     REG_PWM_CDTY5 |= 18500; // Set dutycycle
 
-    printf("PWM ENABLED CHANNEL 5 / PIN 45");
+    printf("PWM ENABLED CHANNEL 5 / PIN 44");
 }
 
 void pwm_set_dutycycle(float dutycycle) {
     if (dutycycle > 1 || dutycycle < 0) {
-        //printf("Dutycycle needs to be between 0 and 1\n");
+        printf("Dutycycle needs to be between 0 and 1\n");
+        return;
     }
 
-    uint32_t max_duty = REG_PWM_CPRD0; // max duty cycle, this should be set by us from the start (?)
+    uint32_t max_duty = REG_PWM_CPRD5; // max duty cycle, this should be set by us from the start (?)
 
-    uint32_t new_duty = (uint32_t)max_duty * (float)dutycycle; // simple enough
+    uint32_t new_duty = (uint32_t)max_duty * (float)(1. - dutycycle); // simple enough
 
-    REG_PWM_CDTY5 = new_duty; // assigning new dutycycle
+    REG_PWM_CDTY5 = new_duty;// new_duty; // assigning new dutycycle
 }
 
-void pwm_set_dutycycle_ms() {
-    return 0;
+void pwm_set_dutycycle_ms(int ms) {
+    if (ms < 1000 || ms > 2000) {
+        printf("PWM must be between 1000 and 2000 ms\n");
+    }
+
+    REG_PWM_CDTY5 = REG_PWM_CPRD5 - ms;
 }
 
-void pwm_disable() {
-    return 0;
+void pwm_set_position(uint8_t pos) {
+    if (pos > 255 || pos < 0) {
+        printf("Position must be between 0 and 90 degrees");
+    }
+    
+    int ms = (int) 1000 + (pos*1000)/255;
+
+    REG_PWM_CDTY5 = REG_PWM_CPRD5 - ms;
 }
