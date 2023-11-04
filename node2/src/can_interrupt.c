@@ -106,7 +106,7 @@ void receive_handler(CAN_MESSAGE* message)
 		// printf("\n\r");
 
 		pwm_set_position(message->data[0]);
-		printf("ms: %d\n", message->data[0]);
+		//printf("pos: %d\n", message->data[0]);
 
 		break;
 	

@@ -6,6 +6,7 @@
 #include "can_interrupt.h"
 #include "can_types.h"
 #include "pwm.h"
+#include "adc.h"
 
 #include "sam.h"
 
@@ -47,11 +48,15 @@ int main()
 
     while (1)
     {
-        CAN_MESSAGE slangemsg = {
-            CAN_PRINTSRT_ID, 6, "slange"
-        };
+        // CAN_MESSAGE slangemsg = {
+        //     CAN_PRINTSRT_ID, 6, "slange"
+        // };
 
         // can_send(&slangemsg, 0);
+
+        int val = adc_read();
+
+        printf("adc: %d\n", val);
 
         delay_ms(300);
     }
