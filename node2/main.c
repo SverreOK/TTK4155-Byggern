@@ -44,6 +44,7 @@ int main()
     can_init_def_tx_rx_mb(CAN_RB);
 
     configure_uart();
+    adc_init();
     printf("Hello World\n");
 
     while (1)
@@ -58,7 +59,7 @@ int main()
 
         printf("adc: %d\n", val);
 
-        delay_ms(300);
+        // delay_ms(300);
     }
     
 }
