@@ -3,7 +3,8 @@
 enum can_ids {
     CAN_JOYSTICK_ID,
     CAN_PRINTSRT_ID,
-    CAN_DUMMY_ID
+    CAN_DUMMY_ID,
+    CAN_CALIBRATION_ID
 };
 
 typedef struct joystick_message {

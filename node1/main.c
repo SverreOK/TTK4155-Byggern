@@ -40,8 +40,7 @@ int main(void) {
 
     oled_reset();
 
-    //menu_activate(menu_init());
-
+    menu_activate(menu_init());
 
     while (1) {
 
@@ -51,14 +50,14 @@ int main(void) {
         // can_transmit(&rottemsg);
         // _delay_ms(200);
         
-        JOYSTICK_MSG joystick = joystick_get();
-        uint8_t slider = adc_read(2);
-        printf("Values: %d %d %d\n", joystick.x, slider, joystick.btn);
-        CAN_MESSAGE joymsg = {
-            CAN_JOYSTICK_ID, 3, {joystick.x, slider, joystick.btn}
-        };
-        can_transmit(&joymsg);
-        _delay_ms(10);
+        // uint8_t slider_R = adc_read(2);
+        // uint8_t slider_L = adc_read(3);
+        // uint8_t flat_btn = io_read(3);
+        // CAN_MESSAGE joymsg = {
+        //     CAN_JOYSTICK_ID, 3, {slider_L, slider_R, flat_btn}
+        // };
+        // can_transmit(&joymsg);
+        // _delay_ms(10);
         // print_adc();
         // printf("Value: %d\n", adc_read(0));
     }

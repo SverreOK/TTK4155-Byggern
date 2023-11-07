@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+uint8_t calibrating;
+
 void motor_controller_init();
 
 void motor_encoder_init();

@@ -4,14 +4,21 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <avr/pgmspace.h>
+#include "can.h"
+#include "can_types.h"
+#include <util/delay.h>
 
 const char main_menu[] = "Main menu";
-const char ping_pong[] = "PingPong";
-const char difficulty[] = "Difficulty";
-const char easy[] = "EASY";
-const char intermediate[] = "MEDIUM";
-const char advanced[] = "ADVANCED";
-const char highscore[] = "Highscore";
+
+const char play_game[] = "Play game";
+const char calibrate_encoder[] = "Calibrate encoder";
+
+// const char ping_pong[] = "PingPong";
+// const char difficulty[] = "Difficulty";
+// const char easy[] = "EASY";
+// const char intermediate[] = "MEDIUM";
+// const char advanced[] = "ADVANCED";
+// const char highscore[] = "Highscore";
 
 // Source u/duane11583 how to create a menu for low level system
 // https://www.reddit.com/r/embedded/comments/vviwq6/whats_the_best_way_to_make_a_user_menu_on_a_tiny/
@@ -20,13 +27,16 @@ menu_ptr menu_init(menu_type_t) {
     menu->menu_title = main_menu;
     clear_children(menu);
 
-    menu_ptr menu_ping_pong = menu_add(menu, ping_pong, &show_ping_pong);
-    menu_ptr menu_difficulty = menu_add(menu, difficulty, &show_difficulty);
-    menu_ptr menu_highscore = menu_add(menu, highscore, &show_highscore);
+    menu_ptr menu_play_game = menu_add(menu, play_game, &show_play_game);
+    menu_ptr menu_calibrate_encoder = menu_add(menu, calibrate_encoder, &show_calibrate_encoder);
 
-    menu_ptr menu_easy = menu_add(menu_difficulty, easy, &show_easy);
-    menu_ptr menu_intermediate = menu_add(menu_difficulty, intermediate, &show_intermediate);
-    menu_ptr menu_advanced = menu_add(menu_difficulty, advanced, &show_advanced);
+    // menu_ptr menu_ping_pong = menu_add(menu, ping_pong, &show_ping_pong);
+    // menu_ptr menu_difficulty = menu_add(menu, difficulty, &show_difficulty);
+    // menu_ptr menu_highscore = menu_add(menu, highscore, &show_highscore);
+
+    // menu_ptr menu_easy = menu_add(menu_difficulty, easy, &show_easy);
+    // menu_ptr menu_intermediate = menu_add(menu_difficulty, intermediate, &show_intermediate);
+    // menu_ptr menu_advanced = menu_add(menu_difficulty, advanced, &show_advanced);
 
     return menu;
 }
@@ -145,61 +155,92 @@ void clear_children(menu_ptr menu)
 }
 
 // menu functions
-void show_ping_pong() {
-    printf("Selected Ping Pong!\n");
+void show_play_game() {
     oled_reset();
     font_size = 8;
     inverted = 0;
-    oled_goto(2, 3*8);
-    oled_print("PING!");
-    oled_goto(4, 6*8);
-    oled_print("PONG!!");
+    oled_goto(3, 4*8);
+    oled_print("Playing!");
+
+    uint8_t slider_R = adc_read(2);
+    uint8_t slider_L = adc_read(3);
+    uint8_t flat_btn = io_read(3);
+    CAN_MESSAGE joymsg = {
+        CAN_JOYSTICK_ID, 3, {slider_L, slider_R, flat_btn}
+    };
+    can_transmit(&joymsg);
+    _delay_ms(10);
 }
 
-void show_difficulty() {
-    printf("Selected Ping Pong!\n");
-}
-
-void show_highscore() {
-    printf("Selected High Scor!\n");
+void show_calibrate_encoder() {
     oled_reset();
     font_size = 8;
     inverted = 0;
-    oled_goto(2, 3*8);
-    oled_print("High!");
-    oled_goto(4, 6*8);
-    oled_print("Score!!");
+    oled_goto(3, 0*8);
+    oled_print("Calibrating...");
+
+    CAN_MESSAGE calmsg = {
+        CAN_CALIBRATION_ID, 1, 0
+    };
+    can_transmit(&calmsg);
+    _delay_ms(10);
 }
 
-void show_easy() {
-    printf("Selected Easy Mode!\n");
-    oled_reset();
-    font_size = 8;
-    inverted = 0;
-    oled_goto(2, 3*8);
-    oled_print("EASY!");
-    oled_goto(4, 6*8);
-    oled_print("MODE!!");
-}
+// void show_ping_pong() {
+//     printf("Selected Ping Pong!\n");
+//     oled_reset();
+//     font_size = 8;
+//     inverted = 0;
+//     oled_goto(2, 3*8);
+//     oled_print("PING!");
+//     oled_goto(4, 6*8);
+//     oled_print("PONG!!");
+// }
 
-void show_intermediate() {
-    printf("Selected Intermediate Mode!\n");
-    oled_reset();
-    font_size = 8;
-    inverted = 0;
-    oled_goto(2, 3*8);
-    oled_print("Intermediate!");
-    oled_goto(4, 6*8);
-    oled_print("Mode!!");
-}
+// void show_difficulty() {
+//     printf("Selected Ping Pong!\n");
+// }
 
-void show_advanced() {
-    printf("Selected Advanced Mode!\n");
-    oled_reset();
-    font_size = 8;
-    inverted = 0;
-    oled_goto(2, 3*8);
-    oled_print("Advanced!");
-    oled_goto(4, 6*8);
-    oled_print("Mode!!");
-}
+// void show_highscore() {
+//     printf("Selected High Scor!\n");
+//     oled_reset();
+//     font_size = 8;
+//     inverted = 0;
+//     oled_goto(2, 3*8);
+//     oled_print("High!");
+//     oled_goto(4, 6*8);
+//     oled_print("Score!!");
+// }
+
+// void show_easy() {
+//     printf("Selected Easy Mode!\n");
+//     oled_reset();
+//     font_size = 8;
+//     inverted = 0;
+//     oled_goto(2, 3*8);
+//     oled_print("EASY!");
+//     oled_goto(4, 6*8);
+//     oled_print("MODE!!");
+// }
+
+// void show_intermediate() {
+//     printf("Selected Intermediate Mode!\n");
+//     oled_reset();
+//     font_size = 8;
+//     inverted = 0;
+//     oled_goto(2, 3*8);
+//     oled_print("Intermediate!");
+//     oled_goto(4, 6*8);
+//     oled_print("Mode!!");
+// }
+
+// void show_advanced() {
+//     printf("Selected Advanced Mode!\n");
+//     oled_reset();
+//     font_size = 8;
+//     inverted = 0;
+//     oled_goto(2, 3*8);
+//     oled_print("Advanced!");
+//     oled_goto(4, 6*8);
+//     oled_print("Mode!!");
+// }

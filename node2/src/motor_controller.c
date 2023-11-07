@@ -6,6 +6,8 @@
 #define EN_PIN PIO_PD9
 #define DIR_PIN PIO_PD10
 
+uint8_t calibrating = 0;
+
 void motor_controller_init()
 {
     dac_init();
@@ -133,10 +135,12 @@ void encoder_reset() {
 
 void encoder_calibration() {
     //go to the left for 1 second
+    calibrating = 1;
     motor_controller_set_speed(-3000);
     delay_ms(1000);
     motor_controller_set_speed(0);
     encoder_reset();
+    calibrating = 0;
     return;
 }
 

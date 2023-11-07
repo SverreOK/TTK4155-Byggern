@@ -23,6 +23,7 @@
 #include "motor_controller.h"
 #include "game.h"
 
+
 #define DEBUG_INTERRUPT 0
 
 /**
@@ -110,12 +111,19 @@ void receive_handler(CAN_MESSAGE* message)
 
 		pwm_set_position(255 - message->data[0]);
 		// printf("pos: %d\n", message->data[0]);
-		if (message->data[2]) 	solenoid_off();
-		else 					solenoid_on();
+		if (message->data[2]) 	solenoid_on();
+		else 					solenoid_off();
 		// motor_controller_set_speed((message->data[1]-128)*32);
 		motor_target = message->data[1]*1400/255;
 
 		break;
+
+	case CAN_CALIBRATION_ID:
+		//Run calibration of motor:)
+		if (!calibrating) {
+			encoder_calibration();
+		}
+	break;
 	
 	default:
 		break;

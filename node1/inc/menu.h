@@ -31,6 +31,10 @@ void menu_print();
 // uart print status
 void uart_print_status(menu_ptr current_menu);
 
+void show_play_game();
+
+void show_calibrate_encoder();
+
 void show_ping_pong();
 
 void show_difficulty();
