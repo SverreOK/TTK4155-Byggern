@@ -7,59 +7,73 @@
 #include "can_types.h"
 #include "pwm.h"
 #include "adc.h"
+#include "dac.h"
+#include "motor_controller.h"
+#include "solenoid.h"
+#include "utility.h"
+#include "game.h"
 
 #include "sam.h"
-
-void delay_ms(uint32_t milliseconds) {
-    volatile uint32_t i;
-    uint32_t cycles = milliseconds * (SystemCoreClock / 1000 / 14);
-
-    for (i = 0; i < cycles; i++) {
-        __NOP(); // This is a no-operation instruction
-    }
-}
-
 
 int main()
 {
     SystemInit();
-
-    pwm_init();    
+    PMC->PMC_PCR |= PMC_PCR_EN;
 
     WDT->WDT_MR = WDT_MR_WDDIS; //Disable Watchdog Timer
 
+    pwm_init();
+    pwm_set_dutycycle_ms(1500);
 
-
-    const uint8_t PPG = 2;
-    const uint8_t PS1 = 7;
-    const uint8_t PS2 = 6;
-    const uint8_t SJW = 4;
-    const uint8_t BRP = 42; // Calculation: It works ¯\_(ツ)_/¯
-
-    const uint32_t CAN_RB = ((PS2-1) << CAN_BR_PHASE1_Pos)
-                          | ((PS1-1) << CAN_BR_PHASE2_Pos)
-                          | ((PPG-1) << CAN_BR_PROPAG_Pos)
-                          | ((SJW-1) << CAN_BR_SJW_Pos)
-                          | ((BRP-1) << CAN_BR_BRP_Pos);
-    can_init_def_tx_rx_mb(CAN_RB);
+    can_setup();
 
     configure_uart();
+
     adc_init();
+    solenoid_init();
+    solenoid_off();
+    motor_controller_init();
+    motor_encoder_init();
+    encoder_calibration();
+    
     printf("Hello World\n");
+    // encoder_reset();
+
+    start_game();
 
     while (1)
     {
-        // CAN_MESSAGE slangemsg = {
-        //     CAN_PRINTSRT_ID, 6, "slange"
-        // };
+        tick_game();
 
+        // CAN_MESSAGE slangemsg = {
+        //     CAN_PRINTSRT_ID, 7, "slange"
+        // };
         // can_send(&slangemsg, 0);
 
-        int val = adc_read();
+        // delay_ms(250);
+        // pwm_set_position(0);
+        // delay_ms(250);
+        // pwm_set_position(255);
 
-        printf("adc: %d\n", val);
-
-        // delay_ms(300);
+        delay_ms(30);
     }
     
 }
+
+// CAN_MESSAGE slangemsg = {
+//     CAN_PRINTSRT_ID, 7, "slange"
+// };
+// can_send(&slangemsg, 0);
+
+// int val = adc_read();
+// printf("adc: %d\n", val);
+
+// dac_output(2000);
+
+// read_motor_encoder();
+
+// int speed = (abs((i*500)%16000 - 8000)-4000)/2;
+// motor_controller_set_speed(speed);
+
+// if (i%100 == 0) solenoid_on();
+// if (i%100 == 10) solenoid_off();

@@ -29,8 +29,6 @@ void can_init()
     const uint64_t BITRATE = 125000;
     const uint8_t BRP = F_OSC/(2*NUM_TQ*BITRATE); // Yields BRP = 4
 
-    // const uint8_t BRP = 4; // Yields baudrate of BITRATE = F_CPU/(2*NUM_QT*BRP) = 4.9152e6/(2*16*2) = 153600
-
     mcp_write(MCP_CNF1, SJW4 | (BRP-1));
     mcp_write(MCP_CNF2, BTLMODE | SAMPLE_1X | ((PS1 - 1) << 3) | (PROPAG - 1));
     mcp_write(MCP_CNF3, WAKFIL_DISABLE | (PS2 - 1));

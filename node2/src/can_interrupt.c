@@ -19,6 +19,9 @@
 
 #include "can_types.h"
 #include "pwm.h"
+#include "solenoid.h"
+#include "motor_controller.h"
+#include "game.h"
 
 #define DEBUG_INTERRUPT 0
 
@@ -105,8 +108,12 @@ void receive_handler(CAN_MESSAGE* message)
 		}
 		// printf("\n\r");
 
-		pwm_set_position(message->data[0]);
-		//printf("pos: %d\n", message->data[0]);
+		pwm_set_position(255 - message->data[0]);
+		// printf("pos: %d\n", message->data[0]);
+		if (message->data[2]) 	solenoid_off();
+		else 					solenoid_on();
+		// motor_controller_set_speed((message->data[1]-128)*32);
+		motor_target = message->data[1]*1400/255;
 
 		break;
 	

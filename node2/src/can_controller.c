@@ -41,6 +41,21 @@ uint8_t can_init_def_tx_rx_mb(uint32_t can_br)
  * \retval Success(0) or failure(1)
  */
 
+void can_setup(){
+    const uint8_t PPG = 2;
+    const uint8_t PS1 = 7;
+    const uint8_t PS2 = 6; // BITLENGTH = 1+2+7+6 = 16
+    const uint8_t SJW = 4;
+    const uint8_t BRP = 42;
+    // BITRATE = MCK / BRP / BITLENGTH = 84MHz / 42 / 16 = 125000Hz
+
+    const uint32_t CAN_RB = ((PS2-1) << CAN_BR_PHASE1_Pos)
+                          | ((PS1-1) << CAN_BR_PHASE2_Pos)
+                          | ((PPG-1) << CAN_BR_PROPAG_Pos)
+                          | ((SJW-1) << CAN_BR_SJW_Pos)
+                          | ((BRP-1) << CAN_BR_BRP_Pos);
+    can_init_def_tx_rx_mb(CAN_RB);
+}
 
 uint8_t can_init(uint32_t can_br, uint8_t num_tx_mb, uint8_t num_rx_mb)
 {
@@ -75,7 +90,7 @@ uint8_t can_init(uint32_t can_br, uint8_t num_tx_mb, uint8_t num_rx_mb)
 	
 	
 	//Enable Clock for CAN0 in PMC
-	PMC->PMC_PCR = PMC_PCR_EN | (0 << PMC_PCR_DIV_Pos) | PMC_PCR_CMD | (ID_CAN0 << PMC_PCR_PID_Pos); // DIV = 1(can clk = MCK/2), CMD = 1 (write), PID = 2B (CAN0)
+	PMC->PMC_PCR |= PMC_PCR_EN | (0 << PMC_PCR_DIV_Pos) | PMC_PCR_CMD | (ID_CAN0 << PMC_PCR_PID_Pos); // DIV = 1(can clk = MCK/2), CMD = 1 (write), PID = 2B (CAN0)
 	PMC->PMC_PCER1 |= 1 << (ID_CAN0 - 32);
 	
 	//Set baudrate, Phase1, phase2 and propagation delay for can bus. Must match on all nodes!

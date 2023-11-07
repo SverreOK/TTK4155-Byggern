@@ -4,7 +4,7 @@
 void pwm_init() {
     REG_PWM_CLK = PWM_CLK_DIVA(42) | PWM_CLK_PREA(0); 
 
-    REG_PMC_PCER1 |= (1 << 4);
+    REG_PMC_PCER1 |= PMC_PCER1_PID36;
 
      // Disable PIO
     REG_PIOC_PDR |= PIO_PDR_P19;
@@ -22,7 +22,7 @@ void pwm_init() {
     REG_PWM_ENA = PWM_ENA_CHID5;
     REG_PWM_CDTY5 |= 18500; // Set dutycycle
 
-    printf("PWM ENABLED CHANNEL 5 / PIN 44");
+    printf("PWM ENABLED CHANNEL 5 / PIN 44");		
 }
 
 void pwm_set_dutycycle(float dutycycle) {

@@ -1,0 +1,16 @@
+node 1:
+- clean up code from start lab1 to lab5
+- implement menu for game
+    - start game with oled
+    - choose difficulty?
+
+
+node 2:
+- get help with servo
+- implement game_tick
+- clean up
+
+
+Funksjoner fra meny:
+- Kalibrer enkoder
+- Spill
