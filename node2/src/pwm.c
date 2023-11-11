@@ -22,7 +22,7 @@ void pwm_init() {
     REG_PWM_ENA = PWM_ENA_CHID5;
     REG_PWM_CDTY5 |= 18500; // Set dutycycle
 
-    printf("PWM ENABLED CHANNEL 5 / PIN 44");		
+    printf("PWM ENABLED CHANNEL 5 / PIN 44\n");		
 }
 
 void pwm_set_dutycycle(float dutycycle) {

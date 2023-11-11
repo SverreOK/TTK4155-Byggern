@@ -1,7 +1,7 @@
 #include "game.h"
 #include "motor_controller.h"
 #include "pid.h"
-#include "adc.h"
+#include "score.h"
 #include "uart_and_printf/printf-stdarg.h"
 
 // VARIABLES
@@ -11,10 +11,11 @@ uint32_t score_delay = SCORE_DELAY;
 
 void start_game() {
     score = 0;
+    printf("GAME STARTING!\n");
+    printf("Losses: %d\n", score);
 }
 
 void tick_game() {
-    // Control motor
     if (calibrating) {
         encoder_calibration();
         calibrating = 0;
@@ -30,15 +31,10 @@ void tick_game() {
     }
 
     // Manage score
-    if (adc_value_below_threshold(300)) {
-            static unsigned long last_score_time = 0;
-            unsigned long current_time = 3000; //HELP
-
-            // Check if enough time has passed since the last score
-            if (current_time - last_score_time >= score_delay) {
-                score++;
-                printf("Score: %d\n", score);
-                last_score_time = 0;
-            }
-        }
+    score_update();
+    if (score_new_goal())
+    {
+        score++;
+        printf("Losses: %d\n", score);
+    }
 }

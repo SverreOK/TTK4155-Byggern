@@ -109,18 +109,19 @@ void receive_handler(CAN_MESSAGE* message)
 		}
 		// printf("\n\r");
 
-		pwm_set_position(255 - message->data[0]);
-		// printf("pos: %d\n", message->data[0]);
-		if (message->data[2]) 	solenoid_on();
+		pwm_set_position(255 - message->data[0]);  	// Control servo
+		if (message->data[2]) 	solenoid_on();		// Control solenoid
 		else 					solenoid_off();
-		// motor_controller_set_power((message->data[1]-128)*32);
-		motor_target = message->data[1]*1400/255;
+		motor_target = message->data[1]*1400/255;	// Set motor position target
 
 		break;
 
 	case CAN_CALIBRATION_ID:
 		//Run calibration of motor:)
 		calibrating = 1;
+		
+	case CAN_STARTGAME_ID:
+		start_game();
 	break;
 	
 	default:
