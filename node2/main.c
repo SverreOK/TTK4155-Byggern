@@ -34,7 +34,7 @@ int main()
     solenoid_off();
     motor_controller_init();
     motor_encoder_init();
-    encoder_calibration();
+    //encoder_calibration();
     
     printf("Hello World\n");
     // encoder_reset();
@@ -50,12 +50,7 @@ int main()
         // };
         // can_send(&slangemsg, 0);
 
-        // delay_ms(250);
-        // pwm_set_position(0);
-        // delay_ms(250);
-        // pwm_set_position(255);
-
-        delay_ms(30);
+        delay_ms(10);
     }
     
 }
@@ -73,7 +68,7 @@ int main()
 // read_motor_encoder();
 
 // int speed = (abs((i*500)%16000 - 8000)-4000)/2;
-// motor_controller_set_speed(speed);
+// motor_controller_set_power(speed);
 
 // if (i%100 == 0) solenoid_on();
 // if (i%100 == 10) solenoid_off();

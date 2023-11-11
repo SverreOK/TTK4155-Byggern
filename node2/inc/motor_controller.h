@@ -11,7 +11,7 @@ void motor_encoder_init();
 
 void motor_controller_set_position();
 
-void motor_controller_set_speed(int32_t value);
+void motor_controller_set_power(int32_t value);
 
 void motor_controller_set_direction(uint8_t dir);
 

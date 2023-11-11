@@ -113,16 +113,14 @@ void receive_handler(CAN_MESSAGE* message)
 		// printf("pos: %d\n", message->data[0]);
 		if (message->data[2]) 	solenoid_on();
 		else 					solenoid_off();
-		// motor_controller_set_speed((message->data[1]-128)*32);
+		// motor_controller_set_power((message->data[1]-128)*32);
 		motor_target = message->data[1]*1400/255;
 
 		break;
 
 	case CAN_CALIBRATION_ID:
 		//Run calibration of motor:)
-		if (!calibrating) {
-			encoder_calibration();
-		}
+		calibrating = 1;
 	break;
 	
 	default:

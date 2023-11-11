@@ -15,9 +15,19 @@ void start_game() {
 
 void tick_game() {
     // Control motor
-    uint32_t motor_pos = read_motor_encoder();
-    int32_t u = pid_controller(motor_target, motor_pos);
-    motor_controller_set_speed(u);
+    if (calibrating) {
+        encoder_calibration();
+        calibrating = 0;
+    }
+    else{
+
+        uint32_t pos;
+        int32_t vel;
+        get_pos_vel(&pos, &vel);                                
+        int32_t target_vel = pos_controller(motor_target, pos);     // Calculates target velocity
+        int32_t power = vel_controller(target_vel, vel);            // Calculates output power
+        motor_controller_set_power(power);                          
+    }
 
     // Manage score
     if (adc_value_below_threshold(300)) {

@@ -21,7 +21,7 @@ void motor_controller_init()
     REG_PIOD_SODR |= EN_PIN;
 }
 
-void motor_controller_set_speed(int32_t value) // -4096 to 4095
+void motor_controller_set_power(int32_t value) // -4096 to 4095
 {
     motor_controller_set_direction(value < 0);
     dac_output(abs(value));
@@ -135,12 +135,10 @@ void encoder_reset() {
 
 void encoder_calibration() {
     //go to the left for 1 second
-    calibrating = 1;
-    motor_controller_set_speed(-3000);
+    motor_controller_set_power(-3000);
     delay_ms(1000);
-    motor_controller_set_speed(0);
+    motor_controller_set_power(0);
     encoder_reset();
-    calibrating = 0;
     return;
 }
 

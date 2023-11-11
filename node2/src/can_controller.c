@@ -70,31 +70,31 @@ uint8_t can_init(uint32_t can_br, uint8_t num_tx_mb, uint8_t num_rx_mb)
 	uint32_t ul_status; 
 	
 	//Disable can
-	CAN0->CAN_MR &= ~CAN_MR_CANEN; 
+	REG_CAN0_MR &= ~CAN_MR_CANEN;
 	//Clear status register on read
-	ul_status = CAN0->CAN_SR; 
+	ul_status = REG_CAN0_SR; 
 	
 	
 	// Disable interrupts on CANH and CANL pins
-	PIOA->PIO_IDR = PIO_PA8A_URXD | PIO_PA9A_UTXD;
+	REG_PIOA_IDR = PIO_PA8A_URXD | PIO_PA9A_UTXD;
 	
 	//Select CAN0 RX and TX in PIOA
-	uint32_t ul_sr = PIOA->PIO_ABSR;
-	PIOA->PIO_ABSR = ~(PIO_PA1A_CANRX0 | PIO_PA0A_CANTX0) & ul_sr;
+	uint32_t ul_sr = REG_PIOA_ABSR;
+	REG_PIOA_ABSR = ~(PIO_PA1A_CANRX0 | PIO_PA0A_CANTX0) & ul_sr;
 	
 	// Disable the Parallel IO (PIO) of the Rx and Tx pins so that the peripheral controller can use them
-	PIOA->PIO_PDR = PIO_PA1A_CANRX0 | PIO_PA0A_CANTX0;
+	REG_PIOA_PDR = PIO_PA1A_CANRX0 | PIO_PA0A_CANTX0;
 	
 	// Enable pull up on CANH and CANL pin
-	PIOA->PIO_PUER = (PIO_PA1A_CANRX0 | PIO_PA0A_CANTX0);
+	REG_PIOA_PUER = (PIO_PA1A_CANRX0 | PIO_PA0A_CANTX0);
 	
 	
 	//Enable Clock for CAN0 in PMC
-	PMC->PMC_PCR |= PMC_PCR_EN | (0 << PMC_PCR_DIV_Pos) | PMC_PCR_CMD | (ID_CAN0 << PMC_PCR_PID_Pos); // DIV = 1(can clk = MCK/2), CMD = 1 (write), PID = 2B (CAN0)
-	PMC->PMC_PCER1 |= 1 << (ID_CAN0 - 32);
+	REG_PMC_PCR |= PMC_PCR_EN | (0 << PMC_PCR_DIV_Pos) | PMC_PCR_CMD | (ID_CAN0 << PMC_PCR_PID_Pos);
+	REG_PMC_PCER1 |= 1 << (ID_CAN0 - 32);
 	
 	//Set baudrate, Phase1, phase2 and propagation delay for can bus. Must match on all nodes!
-	CAN0->CAN_BR = can_br; 
+	REG_CAN0_BR = can_br;
 	
 
 	/****** Start of mailbox configuration ******/
