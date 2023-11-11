@@ -58,8 +58,7 @@ int can_receive(CAN_MESSAGE* message)
 {
     if (mcp_read(MCP_CANINTF) & MCP_RX0IF)
     {
-        message->id = mcp_read(MCP_RXB0SIDH) << 3;
-        message->id |= mcp_read(MCP_RXB0SIDL) >> 5;
+        message->id = mcp_read(MCP_RXB0SIDH) << 3 | mcp_read(MCP_RXB0SIDL) >> 5;
 
         message->length = mcp_read(MCP_RXB0DLC);
 
