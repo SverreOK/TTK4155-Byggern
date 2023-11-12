@@ -5,6 +5,7 @@
 
 // Source u/duane11583 how to create a menu for low level system
 // https://www.reddit.com/r/embedded/comments/vviwq6/whats_the_best_way_to_make_a_user_menu_on_a_tiny/
+// Heavily inspired by https://github.com/johans1jo/TTK4155-Byggern/blob/master/node1/menu.c
 typedef struct menu_entry {
     int number;
     const char *menu_title;

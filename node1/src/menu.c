@@ -22,8 +22,10 @@ const char calibrate_encoder[] = "Calibrate encoder";
 
 // Source u/duane11583 how to create a menu for low level system
 // https://www.reddit.com/r/embedded/comments/vviwq6/whats_the_best_way_to_make_a_user_menu_on_a_tiny/
+
+// Heavily inspired by https://github.com/johans1jo/TTK4155-Byggern/blob/master/node1/menu.c
 menu_ptr menu_init(menu_type_t) {
-    menu_ptr menu = malloc(sizeof(menu_t));
+    menu_ptr menu = sizeof(menu_t);
     menu->menu_title = main_menu;
     clear_children(menu);
 
@@ -42,8 +44,8 @@ menu_ptr menu_init(menu_type_t) {
 }
 
 void menu_activate(menu_ptr menu) {
-    int depth_direction = 0;
-    int element = 0;
+    uint8_t dir = 0;
+    uint8_t element = 0;
     menu_ptr current_menu = menu;
     draw_menu(current_menu, element);
 
@@ -52,7 +54,7 @@ void menu_activate(menu_ptr menu) {
         joystick_poll_action();
         joystick_action direction = joystick_get_action();
 
-        depth_direction = 0;
+        uint8_t dir = 0;
         uint8_t redraw = 0;
 
         switch (direction) {
@@ -72,17 +74,17 @@ void menu_activate(menu_ptr menu) {
 
             case LEFT:
                 if (current_menu == menu) {
-                    depth_direction = 0;
+                    dir = 0;
                 }
                 else {
-                    depth_direction = -1;
+                    dir = -1;
                 }
                 redraw = 1;
                 break;
 
             case RIGHT:
             case PRESS:
-                depth_direction = 1;
+                dir = 1;
                 redraw = 1;
                 break;
             
@@ -90,7 +92,7 @@ void menu_activate(menu_ptr menu) {
                 break;
         }
 
-        current_menu = menu_select(current_menu, depth_direction, element);
+        current_menu = menu_select(current_menu, dir, element);
 
         if (redraw)
         {
@@ -154,7 +156,7 @@ void clear_children(menu_ptr menu)
     }
 }
 
-// menu functions
+// MENU FUNCTIONS
 void show_play_game() {
     oled_reset();
     font_size = 8;
