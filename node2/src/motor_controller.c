@@ -62,6 +62,7 @@ void motor_encoder_init() {
     REG_PIOD_SODR |= PIO_PD1;
 
     // Encoder outputs here
+    // PIO enable to corresponding pin
     REG_PIOC_PER |= PIO_PC1 |
                     PIO_PC2 |
                     PIO_PC3 |
@@ -71,6 +72,7 @@ void motor_encoder_init() {
                     PIO_PC7 |
                     PIO_PC8;
 
+    // PIO output disables
     REG_PIOC_ODR |= PIO_PC1 |
                     PIO_PC2 |
                     PIO_PC3 |
@@ -80,6 +82,7 @@ void motor_encoder_init() {
                     PIO_PC7 |
                     PIO_PC8;
 
+    // PIO pullup disable
     REG_PIOC_PUDR |= PIO_PC1 |
                      PIO_PC2 |
                      PIO_PC3 |
@@ -91,6 +94,7 @@ void motor_encoder_init() {
 }
 
 uint16_t read_motor_encoder() {
+    // source: motorbox tutorial
     REG_PMC_PCER0 |= PMC_PCER0_PID13;
     //Set !OE low
     REG_PIOD_CODR |= PIO_PD0;
