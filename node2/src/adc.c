@@ -31,7 +31,3 @@ uint8_t adc_value_below_threshold(int threshold) {
         return 1;
     }
 }
-
-// working stuff to add
-// 	PMC->PMC_PCR |= (37<<0);
-// 	PMC->PMC_PCER1 |= 1 <<(37-32);
