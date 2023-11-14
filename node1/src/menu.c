@@ -25,7 +25,7 @@ const char calibrate_encoder[] = "Calibrate encoder";
 
 // Heavily inspired by https://github.com/johans1jo/TTK4155-Byggern/blob/master/node1/menu.c
 menu_ptr menu_init(menu_type_t) {
-    menu_ptr menu = sizeof(menu_t);
+    menu_ptr menu = malloc(sizeof(menu_t));
     menu->menu_title = main_menu;
     clear_children(menu);
 
@@ -44,7 +44,7 @@ menu_ptr menu_init(menu_type_t) {
 }
 
 void menu_activate(menu_ptr menu) {
-    uint8_t dir = 0;
+    int8_t dir = 0;
     uint8_t element = 0;
     menu_ptr current_menu = menu;
     draw_menu(current_menu, element);
@@ -54,7 +54,7 @@ void menu_activate(menu_ptr menu) {
         joystick_poll_action();
         joystick_action direction = joystick_get_action();
 
-        uint8_t dir = 0;
+        dir = 0;
         uint8_t redraw = 0;
 
         switch (direction) {
